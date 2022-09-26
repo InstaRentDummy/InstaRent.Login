@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>InstaRent.Login</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="5.3.4" />
+    <PackageReference Include="Volo.Abp.Authorization" Version="5.3.4" />
+    <ProjectReference Include="..\InstaRent.Login.Domain.Shared\InstaRent.Login.Domain.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

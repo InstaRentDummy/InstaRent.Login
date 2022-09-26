@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "InstaRent.Login": {
+      "path": "InstaRent.Login.abpmdl.json"
+    }
+  }
+}
