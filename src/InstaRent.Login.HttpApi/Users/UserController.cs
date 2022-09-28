@@ -34,6 +34,7 @@ namespace InstaRent.Login.Users
         }
 
         [HttpPost]
+        [Route("Register")]
         public virtual Task<UserDto> CreateUserAsync(CreateUpdateUserDto input)
         {
             return _appService.CreateUserAsync(input);
