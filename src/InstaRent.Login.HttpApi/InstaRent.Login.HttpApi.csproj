@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Samples\**" />
+    <EmbeddedResource Remove="Samples\**" />
+    <None Remove="Samples\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="5.3.4" />
     <ProjectReference Include="..\InstaRent.Login.Application.Contracts\InstaRent.Login.Application.Contracts.csproj" />
   </ItemGroup>
