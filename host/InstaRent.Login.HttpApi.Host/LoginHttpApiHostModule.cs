@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Volo.Abp;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -91,6 +92,7 @@ public class LoginHttpApiHostModule : AbpModule
                     .AllowCredentials();
             });
         });
+        Configure<AbpAntiForgeryOptions>(options => { options.AutoValidate = false; });
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
