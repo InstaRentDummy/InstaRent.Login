@@ -14,7 +14,7 @@ namespace InstaRent.Login.Users
         {
         }
 
-        internal User(Guid id, string name, string email, string password, string role) : base(id)
+        public User(Guid id, string name, string email, string password, string role) : base(id)
         {
             Id = id;
             Name = name;
