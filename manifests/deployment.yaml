@@ -1,0 +1,70 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: logsdata
+  annotations:
+    volume.beta.kubernetes.io/storage-class: azure-disk
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instarent-login-deployment
+  labels:
+    app: instarent-login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instarent-login
+  template:
+    metadata:
+      labels:
+        app: instarent-login
+    spec:
+      containers:
+      - name: loginservice
+        image: instarent.azurecr.io/instarent-login:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        env:
+        - name: ASPNETCORE_URLS
+          value: "https://+;http://+"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+          value: "8b6039b6-c67a-448b-977b-0ce6d3fcfd49"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+          value: "/dev-cert/localhost.pfx"
+        - name: App__SelfUrl
+          value: "https://login.instarentshop.com"
+        - name: App__CorsOrigins
+          value: "https://webgateway-service,http://webgateway-service,https://webgateway.instarentshop.com,http://webgateway.instarentshop.com"
+        - name: ConnectionStrings__InstaRent 
+          value: "Server=tcp:instarent.database.windows.net,1433;Initial Catalog=InstaRent;Persist Security Info=False;User ID=instarentadmin;Password=Pa$$w0rd**;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+          
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+          
+        volumeMounts:
+        - mountPath: /dev-cert
+          name: dev-cert
+        - mountPath: /app/Logs
+          name: loginlogsdata 
+          subPathExpr: login/$(POD_NAME) 
+          
+      imagePullSecrets:
+      - name: regcred          
+      volumes:
+      - name: dev-cert
+        secret:
+          secretName: instranet-cert     
+      - name: loginlogsdata
+        persistentVolumeClaim:
+          claimName: logsdata        
