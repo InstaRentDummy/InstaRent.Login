@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "instarentaks-728b"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "instarentaks-728b"
+  template:
+    metadata:
+      labels:
+        app: "instarentaks-728b"
+    spec:
+      containers:
+        - name: "instarentaks-728b"
+          image: "instarent.azurecr.io/instarentaks"
+          ports:
+          - containerPort: 80
