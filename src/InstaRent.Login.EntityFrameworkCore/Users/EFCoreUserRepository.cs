@@ -1,4 +1,5 @@
 ﻿using InstaRent.Login.EntityFrameworkCore;
+using InstaRent.Login.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
@@ -29,7 +30,7 @@ namespace InstaRent.Login.Users
             CancellationToken cancellationToken = default)
         {
             return await (await GetQueryableAsync())
-                       .FirstOrDefaultAsync(q => q.Email == email && q.Password == password,
+                       .FirstOrDefaultAsync(q => q.Email == email && q.Password == CryptoHelper.Encrypt(password),
                            cancellationToken: GetCancellationToken(cancellationToken))
                    ?? throw new EntityNotFoundException(typeof(User)); //TODO: Maybe create new exception with property extending this
         }

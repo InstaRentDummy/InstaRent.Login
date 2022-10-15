@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InstaRent.Login.Helpers;
+using System;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Services;
 
@@ -27,7 +28,7 @@ namespace InstaRent.Login.Users
                 id: GuidGenerator.Create(),
                 name: name,
                     email: email,
-                    password: password,
+                    password: CryptoHelper.Encrypt(password),
                     role: role);
 
             var result = await _repository.InsertAsync(user, true);
@@ -46,7 +47,7 @@ namespace InstaRent.Login.Users
             var user = await _repository.GetAsync(id);
             user.Name = name;
             user.Email = email;
-            user.Password = password;
+            user.Password = CryptoHelper.Encrypt(password);
             user.Role = role;
 
             var result = await _repository.UpdateAsync(user, true);
