@@ -1,0 +1,111 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: irlogs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: azurefile
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instarent-login-deployment
+  labels:
+    app: instarent-login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instarent-login
+  template:
+    metadata:
+      labels:
+        app: instarent-login
+    spec:
+      containers:
+      - name: loginservice
+        image: instarent.azurecr.io/instarentlogin:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        env:
+        - name: ASPNETCORE_URLS
+          value: "https://+;http://+"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+          value: "8b6039b6-c67a-448b-977b-0ce6d3fcfd49"
+        - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+          value: "/dev-cert/localhost.pfx"
+        - name: App__SelfUrl
+          value: "https://login.instarentshop.com"
+        - name: App__CorsOrigins
+          value: "https://webgateway-service,http://webgateway-service,https://webgateway.instarentshop.com,http://webgateway.instarentshop.com"
+        - name: ConnectionStrings__InstaRent 
+          valueFrom: 
+            secretKeyRef:
+              name: instranet-app-secret
+              key: ConnectionStrings__InstaRent_SQL
+
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+          
+        volumeMounts:
+        - mountPath: /dev-cert
+          name: dev-cert
+        - mountPath: /app/Logs
+          name: loginlogsdata 
+          subPathExpr: login/$(POD_NAME) 
+          
+      imagePullSecrets:
+      - name: regcred          
+      volumes:
+      - name: dev-cert
+        secret:
+          secretName: instranet-cert     
+      - name: loginlogsdata
+        persistentVolumeClaim:
+          claimName: irlogs        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+spec:
+  type: ClusterIP
+  selector:
+    app: instarent-login
+  ports:
+    - protocol: TCP
+      name: https
+      port: 443
+      targetPort: 443
+      #nodePort: 32020 # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 80
+      #nodePort: 30020 # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)      
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+ name: hpa-login-deployment
+spec:
+ scaleTargetRef:
+   apiVersion: apps/v1
+   kind: Deployment
+   name: instarent-login-deployment
+ minReplicas: 1
+ maxReplicas: 10
+ targetCPUUtilizationPercentage: 70
