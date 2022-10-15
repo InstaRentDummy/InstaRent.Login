@@ -1,4 +1,5 @@
-﻿using InstaRent.Login.Users;
+﻿using InstaRent.Login.Helpers;
+using InstaRent.Login.Users;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,7 +37,7 @@ namespace InstaRent.Login.Users
                 id: Guid.Parse("4a2d4f7e-c8ee-4495-984b-3eda432a7765"),
                 name: "Test Renter 1",
                 email: "testrenter1@gmail.com",
-                password: "·VT)/CMy2XPg",
+                password: CryptoHelper.Encrypt("·VT)/CMy2XPg"),
                 role: "Renter"
             ));
 
@@ -46,7 +47,7 @@ namespace InstaRent.Login.Users
                 id: Guid.Parse("edba497f-ec22-4773-bd69-9188fe5e7933"),
                 name: "Test Lessee 1",
                 email: "testlesse1@gmail.com",
-                password: "dWKd1^24o@h2",
+                password: CryptoHelper.Encrypt("dWKd1^24o@h2"),
                 role: "Lessee"
             ));
 

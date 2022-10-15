@@ -88,7 +88,7 @@ namespace InstaRent.Login.Users
                 );
 
             changeresult.ShouldNotBeNull();
-            changeresult.Password.ShouldBe("ChngPa$$w0rd");
+            changeresult.Password.ShouldBe("ehTzqcEzuXdfpmq4hKEzJw==");
 
         }
 
