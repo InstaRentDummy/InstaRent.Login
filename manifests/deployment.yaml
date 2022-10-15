@@ -50,8 +50,11 @@ spec:
         - name: App__CorsOrigins
           value: "https://webgateway-service,http://webgateway-service,https://webgateway.instarentshop.com,http://webgateway.instarentshop.com"
         - name: ConnectionStrings__InstaRent 
-          value: "Server=tcp:instarent.database.windows.net,1433;Initial Catalog=InstaRent;Persist Security Info=False;User ID=instarentadmin;Password=Pa$$w0rd**;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-          
+          valueFrom: 
+            secretKeyRef:
+              name: instranet-app-secret
+              key: ConnectionStrings__InstaRent_SQL
+
         - name: POD_NAME
           valueFrom:
             fieldRef:
